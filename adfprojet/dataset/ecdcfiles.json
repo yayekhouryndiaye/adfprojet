@@ -1,0 +1,24 @@
+{
+	"name": "ecdcfiles",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_storagebob",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ecdcfiles"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "githubusercontent_ecdc_file_list.json",
+				"folderPath": "Nouveau dossier",
+				"container": "config"
+			}
+		},
+		"schema": {}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

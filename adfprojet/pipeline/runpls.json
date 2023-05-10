@@ -1,0 +1,66 @@
+{
+	"name": "runpls",
+	"properties": {
+		"activities": [
+			{
+				"name": "edcfilescopy",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_copy_data_http",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "tranformationdeathscases",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "edcfilescopy",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_run_deathcases",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "remplissagew de la table deathscases",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "tranformationdeathscases",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_copy_deathcasesINBD",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "runpls"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-05-08T14:52:00Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

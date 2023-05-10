@@ -1,0 +1,9 @@
+{
+	"name": "fabriquekh1",
+	"location": "southcentralus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "b7be5d10-6b22-49f1-afcc-65837edfa054",
+		"tenantId": "d4e6b07b-a651-4364-97af-28b81c0012ed"
+	}
+}
