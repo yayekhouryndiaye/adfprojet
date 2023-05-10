@@ -128,7 +128,7 @@
 				"type": "AzureSqlTable",
 				"schema": [],
 				"typeProperties": {
-					"schema": "test",
+					"schema": "",
 					"table": "teston"
 				}
 			},
