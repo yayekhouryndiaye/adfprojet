@@ -5,6 +5,9 @@
 			"referenceName": "ls_datalakegen2",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Nouveau dossier"
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
