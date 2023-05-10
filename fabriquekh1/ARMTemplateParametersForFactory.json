@@ -1,0 +1,24 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "fabriquekh1"
+		},
+		"ls_datalakegen2_accountKey": {
+			"value": ""
+		},
+		"ls_storagebob_connectionString": {
+			"value": ""
+		},
+		"sl_sqlbd_connectionString": {
+			"value": ""
+		},
+		"ls_HttpServer_properties_typeProperties_url": {
+			"value": "@{linkedService().sourceBaseURL}"
+		},
+		"ls_datalakegen2_properties_typeProperties_url": {
+			"value": "https://covsreportingsdl.dfs.core.windows.net/"
+		}
+	}
+}
