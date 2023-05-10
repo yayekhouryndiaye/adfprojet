@@ -115,6 +115,71 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Power Query1",
+						"type": "ExecuteWranglingDataflow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "powerquery1",
+								"type": "DataFlowReference",
+								"datasetParameters": {
+									"cases_deaths": {},
+									"UserQueryAzureSqlTable1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"queries": [
+								{
+									"queryName": "UserQuery",
+									"dataflowSinks": [
+										{
+											"name": "UserQueryAzureSqlTable1",
+											"dataset": {
+												"referenceName": "AzureSqlTable1",
+												"type": "DatasetReference",
+												"parameters": {}
+											},
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> UserQueryAzureSqlTable1"
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "test"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/powerquery1')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/pl_Copy_data_admissions_cases')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -881,6 +946,27 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "sl_sqlbd",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "test",
+					"table": "teston"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/sl_sqlbd')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DS_BD_deathcases')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -948,6 +1034,9 @@
 				"linkedServiceName": {
 					"referenceName": "ls_datalakegen2",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Nouveau dossier"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
@@ -1134,6 +1223,9 @@
 				"linkedServiceName": {
 					"referenceName": "ls_datalakegen2",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Nouveau dossier"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
@@ -1681,6 +1773,9 @@
 					"referenceName": "ls_datalakegen2",
 					"type": "LinkedServiceReference"
 				},
+				"folder": {
+					"name": "Nouveau dossier"
+				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
@@ -1775,6 +1870,9 @@
 				"linkedServiceName": {
 					"referenceName": "ls_datalakegen2",
 					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "Nouveau dossier"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
@@ -2406,6 +2504,31 @@
 				"[concat(variables('factoryId'), '/datasets/DS_lookup_country')]",
 				"[concat(variables('factoryId'), '/datasets/DS_dim_date')]",
 				"[concat(variables('factoryId'), '/datasets/DS_admission')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/powerquery1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "cases_deaths",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> cases_deaths",
+							"dataset": {
+								"referenceName": "cases_deaths",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"script": "section Section1;\r\nshared cases_deaths = let AdfDoc = AzureStorage.DataLakeContents(\"https://covsreportingsdl.dfs.core.windows.net/deathcases/cases_deaths.csv\"),Csv = Csv.Document(AdfDoc, [Delimiter = \",\", Encoding = TextEncoding.Utf8, QuoteStyle = QuoteStyle.Csv]), PromotedHeaders = Table.PromoteHeaders(Csv, [PromoteAllScalars = true]) in  PromotedHeaders;\r\nshared UserQuery = let Source = #\"cases_deaths\",\r\n  #\"Colonnes supprimées\" = Table.RemoveColumns(Source, {\"rate_14_day\", \"continent\", \"country_code\"}) in #\"Colonnes supprimées\";\r\n",
+					"documentLocale": "en-us"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/cases_deaths')]"
 			]
 		}
 	]
